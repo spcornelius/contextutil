@@ -1,6 +1,6 @@
 import contextlib
 
-__all__ = ['ifelse', 'nullcontext', 'as_context']
+__all__ = ['ifelse', 'nullcontext', 'as_context', 'conditional']
 
 
 class nullcontext(contextlib.AbstractContextManager):
@@ -98,3 +98,9 @@ class ifelse(contextlib.AbstractContextManager):
             return self.context1.__exit__(*args)
         else:
             return self.context2.__exit__(*args)
+
+
+class conditional(ifelse):
+
+    def __init__(self, condition, context):
+        ifelse.__init__(self, condition, context, nullcontext())
