@@ -5,7 +5,7 @@ import os
 pkg_name = 'contextutil'
 url = 'https://github.com/spcornelius/' + pkg_name
 license = 'GPLv3'
-version = '0.1.0'
+version = '0.1.1'
 
 classifiers = [
     "Development Status :: 3 - Alpha",
