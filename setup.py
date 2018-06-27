@@ -11,9 +11,6 @@ classifiers = [
     "Development Status :: 3 - Alpha",
     'License :: OSI Approved :: GNU General Public License v3 (GPLv3)',
     'Operating System :: OS Independent',
-    'Topic :: Scientific/Engineering',
-    'Topic :: Scientific/Engineering :: Mathematics',
-    'Topic :: Scientific/Engineering :: Physics'
 ]
 
 
