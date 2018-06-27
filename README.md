@@ -19,7 +19,7 @@ Use one of two context managers depending on whether
 
 ## Example
 
-The following snippet will divide two `numpy` vectors
+The following function will divide two `numpy` vectors
 elementwise, optionally ignoring any divide-by-zero 
 warnings
 
@@ -27,7 +27,7 @@ warnings
     import numpy as np
     import warnings
 
-    def divide(a, b):
+    def divide(a, b, ignore=False):
         with ifelse(ignore, np.errstate(divide='ignore'), nullcontext()):
             c = a / b
         return c
