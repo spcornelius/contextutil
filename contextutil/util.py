@@ -46,7 +46,7 @@ class as_context(contextlib.AbstractContextManager):
     def __exit__(self, *excinfo):
         return self._x.__exit__(self, *excinfo)
 
-
+@contextlib.contextmanager
 class ifelse(contextlib.AbstractContextManager):
     """ If-else, but for "with". Wrap one of two other
     context managers depending on whether a given condition
@@ -100,23 +100,19 @@ class ifelse(contextlib.AbstractContextManager):
             return self.context2.__exit__(*args)
 
 
-class conditional(ifelse):
-    """ Invoke context manager conditionally. Identical to
-        ifelse(condition, context1, nullcontext()).
+@contextlib.contextmanager
+def optional(self, context, use_cm=True):
+    """ Optionally invoke context manager depending on
+        condition
 
     Parameters
     ----------
-    condition : bool
+    context : instance of contextlib.AbstractContextManager
+    use_cm : bool (True)
         if True:
-            Enter/return context1
-        if False:
-            Enter/return context2
-    context1 : object or instance of contextlib.AbstractContextManager
-        if instance of contextlib.AbstractContextManager:
-            Will be entered if condition is True
+            Enter user-supplied context as normal
         otherwise:
-            Enter a null context with context1 as the return value
-            if condition is True
+            Enter a nullcontext
     """
-    def __init__(self, condition, context):
-        ifelse.__init__(self, condition, context, nullcontext())
+    with (context if use_cm else nullcontext()):
+        yield
