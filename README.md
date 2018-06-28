@@ -12,10 +12,10 @@ Context manager that does nothing.
 Casts a given object as a context manager,
 allowing it to be used in a `with` statement.
 
-`ifelse(condition, context1, context2)`
+`optional(context, use_cm=False, default=True)`
 
-Use one of two context managers depending on whether
-`condition` is `True` or `False`.
+Enter context manager optionally according to supplied flag,
+otherwise enter a `nullcontext` yielding `default`.
 
 ## Examples
 
@@ -28,16 +28,9 @@ warnings
     import warnings
 
     def divide(a, b, ignore=False):
-        with conditional(ignore, np.errstate(divide='ignore')):
+        with optional(np.errstate(divide='ignore'), use_cm=ignore):
             c = a / b
         return c
-        
-Or suppose you wish to have a function that can act on either
-an open file-like object OR a path to an unopened file:
-
-    def f(my_file):
-        with ifelse(isinstance(my_file, str), open(my_file, 'rw'), my_file):
-            # Do some I/O with the open file
    
         
 ## License
