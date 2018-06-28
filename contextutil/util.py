@@ -3,7 +3,8 @@ import contextlib
 __all__ = ['nullcontext', 'as_context', 'optional']
 
 
-class nullcontext(contextlib.AbstractContextManager):
+@contextlib.contextmanager
+def nullcontext(return_on_enter=None):
     """ Context manager that does nothing.
 
     Parameters
@@ -11,17 +12,10 @@ class nullcontext(contextlib.AbstractContextManager):
     return_on_enter : object
         Object to return with "as" clause
     """
-    def __init__(self, return_on_enter=None):
-        self.return_on_enter = return_on_enter
+    yield return_on_enter
 
-    def __enter__(self):
-        return self.return_on_enter
-
-    def __exit__(self, *excinfo):
-        pass
-
-
-class as_context(contextlib.AbstractContextManager):
+@contextlib.contextmanager
+def as_context(x):
     """ Wrap a given object as a context manager (if it
     is not one already), allowing it to be used in a
     with statement.
@@ -34,21 +28,11 @@ class as_context(contextlib.AbstractContextManager):
         otherwise:
             Return a nullcontext wrapping x
     """
-    def __init__(self, x):
-        if isinstance(x, contextlib.AbstractContextManager):
-            self._x = x
-        else:
-            self._x = nullcontext(x)
-
-    def __enter__(self):
-        return self._x.__enter__()
-
-    def __exit__(self, *excinfo):
-        return self._x.__exit__(self, *excinfo)
-
+    with (x if isinstance(x, contextlib.AbstractContextManager) else nullcontext(x)) as y:
+        yield y
 
 @contextlib.contextmanager
-def optional(self, context, use_cm=True, default=None):
+def optional(context, use_cm=True, default=None):
     """ Optionally invoke context manager depending on
         condition
 
@@ -61,5 +45,5 @@ def optional(self, context, use_cm=True, default=None):
         otherwise:
             Enter a nullcontext
     """
-    with (context if use_cm else nullcontext(default)):
-        yield
+    with (context if use_cm else nullcontext(default)) as x:
+        yield x
