@@ -101,6 +101,22 @@ class ifelse(contextlib.AbstractContextManager):
 
 
 class conditional(ifelse):
+    """ Invoke context manager conditionally. Identical to
+        ifelse(condition, context1, nullcontext()).
 
+    Parameters
+    ----------
+    condition : bool
+        if True:
+            Enter/return context1
+        if False:
+            Enter/return context2
+    context1 : object or instance of contextlib.AbstractContextManager
+        if instance of contextlib.AbstractContextManager:
+            Will be entered if condition is True
+        otherwise:
+            Enter a null context with context1 as the return value
+            if condition is True
+    """
     def __init__(self, condition, context):
         ifelse.__init__(self, condition, context, nullcontext())
