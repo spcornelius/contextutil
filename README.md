@@ -17,20 +17,28 @@ allowing it to be used in a `with` statement.
 Use one of two context managers depending on whether
 `condition` is `True` or `False`.
 
-## Example
+## Examples
 
 The following function will divide two `numpy` vectors
 elementwise, optionally ignoring any divide-by-zero 
 warnings
 
-    from contextutil import ifelse, nullcontext
+    from contextutil import ifelse, nullcontext, conditional
     import numpy as np
     import warnings
 
     def divide(a, b, ignore=False):
-        with ifelse(ignore, np.errstate(divide='ignore'), nullcontext()):
+        with conditional(ignore, np.errstate(divide='ignore')):
             c = a / b
         return c
+        
+Or suppose you wish to have a function that can act on either
+an open file-like object OR a path to an unopened file:
+
+    def f(my_file):
+        with ifelse(isinstance(my_file, str), open(my_file, 'rw'), my_file):
+            # Do some I/O with the open file
+   
         
 ## License
 This software is distributed under the [GNU Public License v3.0](https://www.gnu.org/licenses/gpl-3.0.en.html). 
