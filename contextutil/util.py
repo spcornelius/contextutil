@@ -46,73 +46,23 @@ class as_context(contextlib.AbstractContextManager):
     def __exit__(self, *excinfo):
         return self._x.__exit__(self, *excinfo)
 
-@contextlib.contextmanager
-class ifelse(contextlib.AbstractContextManager):
-    """ If-else, but for "with". Wrap one of two other
-    context managers depending on whether a given condition
-    is True or False. Works with or without "as" in either case.
-
-    Parameters
-    ----------
-    condition : bool
-        if True:
-            Enter/return context1
-        if False:
-            Enter/return context2
-    context1 : object or instance of contextlib.AbstractContextManager
-        if instance of contextlib.AbstractContextManager:
-            Will be entered if condition is True
-        otherwise:
-            Enter a null context with context1 as the return value
-            if condition is True
-
-    context2 : object or instance of contextlib.AbstractContextManager
-        if instance of contextlib.AbstractContextManager:
-            Will be entered if condition is False
-        otherwise:
-            Enter a null context with context2 as the return value
-            if condition is False
-
-    Examples
-    --------
-    # Perform I/O on a file (given by name) or an existing IOBase object,
-    # closing afterward in the case of a file name
-
-    with ifelse(isinstance(f, io.IOBase), f, open(f, "rw")) as fh:
-        # Do some I/O
-    """
-
-    def __init__(self, condition, context1, context2):
-        self.condition = condition
-        self.context1 = as_context(context1)
-        self.context2 = as_context(context2)
-
-    def __enter__(self):
-        if self.condition:
-            return self.context1.__enter__()
-        else:
-            return self.context2.__enter__()
-
-    def __exit__(self, *args):
-        if self.condition:
-            return self.context1.__exit__(*args)
-        else:
-            return self.context2.__exit__(*args)
-
 
 @contextlib.contextmanager
-def optional(self, context, use_cm=True):
+def optional(self, context, use_cm=False, default=None):
     """ Optionally invoke context manager depending on
         condition
 
     Parameters
     ----------
     context : instance of contextlib.AbstractContextManager
-    use_cm : bool (True)
+    use_cm : bool (False)
         if True:
             Enter user-supplied context as normal
         otherwise:
             Enter a nullcontext
+    default : object
+        If use_cm is False, default will be yielded by the null
+        context manager
     """
     with (context if use_cm else nullcontext()):
         yield
