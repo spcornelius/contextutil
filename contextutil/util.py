@@ -1,6 +1,6 @@
 import contextlib
 
-__all__ = ['ifelse', 'nullcontext', 'as_context', 'conditional']
+__all__ = ['nullcontext', 'as_context', 'optional']
 
 
 class nullcontext(contextlib.AbstractContextManager):
@@ -48,21 +48,18 @@ class as_context(contextlib.AbstractContextManager):
 
 
 @contextlib.contextmanager
-def optional(self, context, use_cm=False, default=None):
+def optional(self, context, use_cm=True, default=None):
     """ Optionally invoke context manager depending on
         condition
 
     Parameters
     ----------
     context : instance of contextlib.AbstractContextManager
-    use_cm : bool (False)
+    use_cm : bool (True)
         if True:
             Enter user-supplied context as normal
         otherwise:
             Enter a nullcontext
-    default : object
-        If use_cm is False, default will be yielded by the null
-        context manager
     """
-    with (context if use_cm else nullcontext()):
+    with (context if use_cm else nullcontext(default)):
         yield
